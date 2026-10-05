@@ -1,0 +1,35 @@
+# Next.js Portfolio & Automated Blog Plan
+
+## 1. Overview
+Build a high-performance, SEO-friendly personal portfolio and blog using Next.js. The site will feature a premium UI/UX (dark mode, glassmorphism) and will be heavily automated to reduce manual updates.
+
+## 2. Tech Stack
+- **Framework**: Next.js (React) for Server-Side Rendering (SSR) and top-tier SEO.
+- **Styling**: Tailwind CSS (or Tailwind if preferred later) for complex glassmorphism and animations.
+- **Projects Data**: GitHub API (Dynamically fetches your latest pinned repositories/commits so you don't have to update the site manually).
+- **Blog Data**: Headless CMS (like Dev.to or Hashnode) or a direct Next.js API route to receive content automatically from n8n.
+
+## 3. Automation Workflows
+- **The Projects**: Your Next.js app will ping the GitHub API. Whenever you update a project on GitHub, your portfolio updates instantly.
+- **The Blog**: You will use n8n (or Make) to automatically generate or format content. n8n will publish this content via API, and Next.js will seamlessly display the latest posts.
+
+## 4. Site Structure
+- **/** (Home): Hero Section with an introduction and CTA.
+- **/#about**: Your background, tech stack, and skills.
+- **/#projects** (or /projects): Dynamic grid of your GitHub projects.
+- **/blog**: An SEO-optimized page listing your automated articles, with dynamic routing for individual posts (e.g., /blog/[slug]).
+- **/#contact**: Form or social links.
+
+## 5. UI/UX Design Direction
+- **Theme**: Premium Dark Mode and Light mode.
+- **Accents**: Neon cyan and purple highlights.
+- **Elements**: Frosted glass (glassmorphism) cards, smooth scroll, and glowing borders on interactive elements.
+
+## 6. Next Steps (When you are ready)
+1. Initialize the Next.js project (`npx create-next-app`).
+2. Set up the foundational UI (Layout, Navbar, Footer, Dark Theme).
+3. Connect the GitHub API for the Projects section.
+4. Set up the Blog architecture and connect it to your automation tool.
+5. Provide your specific project details, bio, and resume to populate the site.
+
+[Waiting for user to provide tech stack and project details...]
