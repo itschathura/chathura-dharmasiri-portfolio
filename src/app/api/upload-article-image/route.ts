@@ -7,6 +7,16 @@ const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg"];
 
 export async function POST(request: Request) {
   try {
+    // Authentication: require admin password
+    const authHeader = request.headers.get("Authorization");
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword || authHeader !== `Bearer ${adminPassword}`) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
@@ -24,7 +34,7 @@ export async function POST(request: Request) {
 
     // 2. Validate file extension and MIME type
     const ext = path.extname(file.name).toLowerCase();
-    if (!ALLOWED_EXTENSIONS.includes(ext) && !file.type.startsWith("image/")) {
+    if (!ALLOWED_EXTENSIONS.includes(ext) || !file.type.startsWith("image/")) {
       return NextResponse.json(
         { error: "Only image files (JPG, PNG, WebP, GIF, SVG) are allowed" },
         { status: 400 }

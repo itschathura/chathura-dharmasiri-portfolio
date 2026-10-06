@@ -84,14 +84,24 @@ export default function FooterSection() {
     }
   }, [authenticated]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === "chathura123") {
-      setAuthenticated(true);
-      setError("");
-      loadCurrentPosts();
-    } else {
-      setError("Incorrect password. Access denied.");
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAuthenticated(true);
+        setError("");
+        loadCurrentPosts();
+      } else {
+        setError(data.error || "Incorrect password. Access denied.");
+      }
+    } catch {
+      setError("Login failed. Please try again.");
     }
   };
 
@@ -109,6 +119,9 @@ export default function FooterSection() {
 
       const res = await fetch("/api/upload-article-image", {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${password}`,
+        },
         body: formData,
       });
 

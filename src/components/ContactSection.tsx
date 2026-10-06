@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 
@@ -14,17 +14,51 @@ export default function ContactSection() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg("");
 
-    // Simulate sending message
-    setTimeout(() => {
+    try {
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+      if (!accessKey || accessKey === "YOUR_ACCESS_KEY_HERE") {
+        // Fallback to mailto if Web3Forms key is not configured
+        const subject = encodeURIComponent(`[Portfolio] ${formData.projectType} — from ${formData.name}`);
+        const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nProject Type: ${formData.projectType}\n\n${formData.message}`);
+        window.open(`mailto:itsmechathura@outlook.com?subject=${subject}&body=${body}`, "_blank");
+        setLoading(false);
+        setSubmitted(true);
+        setFormData({ name: "", email: "", projectType: "AI & Machine Learning", message: "" });
+        return;
+      }
+
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `[Portfolio] ${formData.projectType} — from ${formData.name}`,
+          from_name: formData.name,
+          email: formData.email,
+          project_type: formData.projectType,
+          message: formData.message,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setSubmitted(true);
+        setFormData({ name: "", email: "", projectType: "AI & Machine Learning", message: "" });
+      } else {
+        setErrorMsg(data.message || "Failed to send message. Please try again.");
+      }
+    } catch {
+      setErrorMsg("Network error. Please try again or email directly.");
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-      setFormData({ name: "", email: "", projectType: "AI & Machine Learning", message: "" });
-    }, 1000);
+    }
   };
 
   return (
@@ -211,6 +245,13 @@ export default function ContactSection() {
                     </>
                   )}
                 </button>
+
+                {errorMsg && (
+                  <div className="flex items-center gap-2 p-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
+                    <AlertCircle size={14} className="shrink-0" />
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
               </form>
             )}
           </div>
