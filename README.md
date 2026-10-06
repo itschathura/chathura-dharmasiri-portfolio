@@ -4,7 +4,7 @@ A high-performance, modern AI/ML Engineer portfolio and interactive technical bl
 
 ---
 
-## ✨ Features
+## Features
 
 - **Hero Spotlight**: Dynamic featured article showcase with direct article lightbox view.
 - **Interactive Blog & Article Manager**:
@@ -18,7 +18,7 @@ A high-performance, modern AI/ML Engineer portfolio and interactive technical bl
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 First, install dependencies and run the development server:
 
@@ -31,7 +31,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: Next.js 16 (Turbopack, App Router)
 - **Language**: TypeScript
