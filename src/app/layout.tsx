@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "chathura.me",
+  title: "chathura.dev",
   description: "Chathura Dharmasiri — AI/ML Engineer & Computer Science Undergraduate Portfolio",
   icons: {
     icon: "/footer/tameimpala.jpg",
