@@ -25,7 +25,7 @@ const DEFAULT_POSTS: BlogPost[] = [
     description: "An in-depth guide on implementing robust guardrails, source attribution, and chunking strategies to eliminate LLM hallucinations.",
     date: "Oct 02, 2026",
     category: "AI & Engineering",
-    image: "/cards/documind ai.jpg",
+    image: "/cards/documind-ai.jpg",
     isStarred: true
   },
   {
@@ -180,7 +180,7 @@ export default function FooterSection() {
         category: newPost.category,
         date: newPost.date || new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
         description: newPost.description,
-        image: newPost.image || "/cards/documind ai.jpg",
+        image: newPost.image || "/cards/documind-ai.jpg",
         link: newPost.link || undefined,
         isStarred: existingPosts.length === 0
       };
@@ -629,7 +629,7 @@ export default function FooterSection() {
                               <div className="flex items-center gap-3 overflow-hidden">
                                 <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-black/40 border border-white/10">
                                   <Image
-                                    src={post.image || "/cards/documind ai.jpg"}
+                                    src={post.image || "/cards/documind-ai.jpg"}
                                     alt={post.title}
                                     fill
                                     className="object-cover"

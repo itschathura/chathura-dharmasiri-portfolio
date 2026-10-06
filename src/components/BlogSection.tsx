@@ -31,7 +31,7 @@ const DEFAULT_POSTS: BlogPost[] = [
     description: "An in-depth guide on implementing robust guardrails, source attribution, and chunking strategies to eliminate LLM hallucinations.",
     date: "Oct 02, 2026",
     category: "AI & Engineering",
-    image: "/cards/documind ai.jpg",
+    image: "/cards/documind-ai.jpg",
     isStarred: true,
     link: "https://documind-ai-aqf.pages.dev/"
   },
@@ -202,7 +202,7 @@ export default function BlogSection() {
               >
                 {/* Layer 1: Accurate high-vibrancy blurred background fill */}
                 <Image
-                  src={post.image || "/cards/documind ai.jpg"}
+                  src={post.image || "/cards/documind-ai.jpg"}
                   alt=""
                   fill
                   className="object-cover filter blur-3xl scale-150 opacity-85 brightness-110 pointer-events-none"
@@ -213,7 +213,7 @@ export default function BlogSection() {
 
                 {/* Layer 2: Main crisp fitted image */}
                 <Image
-                  src={post.image || "/cards/documind ai.jpg"}
+                  src={post.image || "/cards/documind-ai.jpg"}
                   alt={post.title}
                   fill
                   className="object-contain p-2 relative z-10 transition-transform duration-500 group-hover/img:scale-105"
@@ -336,7 +336,7 @@ export default function BlogSection() {
             {/* Left Side: Uncropped Photo with Ambient Blur */}
             <div className="relative w-full md:w-1/2 min-h-[240px] md:min-h-[380px] bg-black/50 p-4 flex items-center justify-center overflow-hidden shrink-0">
               <Image
-                src={selectedPost.image || "/cards/documind ai.jpg"}
+                src={selectedPost.image || "/cards/documind-ai.jpg"}
                 alt=""
                 fill
                 className="object-cover filter blur-3xl scale-150 opacity-80 brightness-110 pointer-events-none"
@@ -347,7 +347,7 @@ export default function BlogSection() {
 
               <div className="relative w-full h-[220px] md:h-[340px] z-10">
                 <Image
-                  src={selectedPost.image || "/cards/documind ai.jpg"}
+                  src={selectedPost.image || "/cards/documind-ai.jpg"}
                   alt={selectedPost.title}
                   fill
                   className="object-contain drop-shadow-2xl"

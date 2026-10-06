@@ -14,7 +14,7 @@ const DEFAULT_POSTS: BlogPost[] = [
     description: "An in-depth guide on implementing robust guardrails, source attribution, and chunking strategies to eliminate LLM hallucinations.",
     date: "Oct 02, 2026",
     category: "AI & Engineering",
-    image: "/cards/documind ai.jpg",
+    image: "/cards/documind-ai.jpg",
     isStarred: true
   },
   {
@@ -142,7 +142,7 @@ export default function HeroSection() {
               <div className="relative h-44 w-full rounded-xl overflow-hidden mb-3.5 bg-black/30 border border-white/10">
                 {/* Layer 1: High-vibrancy blurred background fill */}
                 <Image
-                  src={starredPost.image || "/cards/documind ai.jpg"}
+                  src={starredPost.image || "/cards/documind-ai.jpg"}
                   alt=""
                   fill
                   className="object-cover filter blur-3xl scale-150 opacity-85 brightness-110 pointer-events-none"
@@ -153,7 +153,7 @@ export default function HeroSection() {
 
                 {/* Layer 2: Main crisp fitted image */}
                 <Image
-                  src={starredPost.image || "/cards/documind ai.jpg"}
+                  src={starredPost.image || "/cards/documind-ai.jpg"}
                   alt={starredPost.title}
                   fill
                   className="object-contain p-2 relative z-10 transition-transform duration-500 group-hover:scale-105"
