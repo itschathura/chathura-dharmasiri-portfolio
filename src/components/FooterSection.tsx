@@ -62,7 +62,21 @@ export default function FooterSection() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [publishedSuccess, setPublishedSuccess] = useState(false);
 
-  const loadCurrentPosts = () => {
+  const loadCurrentPosts = async () => {
+    try {
+      const res = await fetch("/api/blogs");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
+          setPostsList(data.posts);
+          localStorage.setItem("portfolio_blog_posts", JSON.stringify(data.posts));
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Failed fetching posts from API, falling back to cache", e);
+    }
+
     try {
       const saved = localStorage.getItem("portfolio_blog_posts");
       if (saved) {
@@ -163,49 +177,54 @@ export default function FooterSection() {
     }
   };
 
-  const handlePublishPost = (e: React.FormEvent) => {
+  const handlePublishPost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPost.title || !newPost.description) return;
 
     try {
-      const existingRaw = localStorage.getItem("portfolio_blog_posts");
-      let existingPosts: BlogPost[] = DEFAULT_POSTS;
-      if (existingRaw) {
-        existingPosts = JSON.parse(existingRaw);
-      }
-
-      const postToAdd: BlogPost = {
-        id: Date.now().toString(),
+      const postPayload = {
         title: newPost.title,
-        category: newPost.category,
+        category: newPost.category || "AI & Engineering",
         date: newPost.date || new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
         description: newPost.description,
         image: newPost.image || "/cards/documind-ai.jpg",
         link: newPost.link || undefined,
-        isStarred: existingPosts.length === 0
+        isStarred: postsList.length === 0
       };
 
-      const updated = [postToAdd, ...existingPosts];
-      localStorage.setItem("portfolio_blog_posts", JSON.stringify(updated));
-      setPostsList(updated);
-      
-      window.dispatchEvent(new Event("blog_updated"));
-
-      setPublishedSuccess(true);
-      setNewPost({
-        title: "",
-        category: "AI & Engineering",
-        date: new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
-        description: "",
-        image: "",
-        link: ""
+      const res = await fetch("/api/blogs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${password}`
+        },
+        body: JSON.stringify(postPayload)
       });
 
-      setTimeout(() => {
-        setPublishedSuccess(false);
-      }, 3000);
+      if (res.ok) {
+        await loadCurrentPosts();
+        window.dispatchEvent(new Event("blog_updated"));
+
+        setPublishedSuccess(true);
+        setNewPost({
+          title: "",
+          category: "AI & Engineering",
+          date: new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
+          description: "",
+          image: "",
+          link: ""
+        });
+
+        setTimeout(() => {
+          setPublishedSuccess(false);
+        }, 3000);
+      } else {
+        const errData = await res.json();
+        setError(errData.error || "Failed to publish post to database");
+      }
     } catch (err) {
       console.error("Error publishing blog post", err);
+      setError("Failed to publish post");
     }
   };
 
@@ -214,33 +233,70 @@ export default function FooterSection() {
     setEditForm({ ...post });
   };
 
-  const handleSaveEdit = (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editForm) return;
 
-    const updated = postsList.map((p) => (p.id === editForm.id ? editForm : p));
-    setPostsList(updated);
-    localStorage.setItem("portfolio_blog_posts", JSON.stringify(updated));
-    window.dispatchEvent(new Event("blog_updated"));
-    setEditingPostId(null);
-    setEditForm(null);
+    try {
+      const res = await fetch(`/api/blogs/${editForm.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${password}`
+        },
+        body: JSON.stringify(editForm)
+      });
+
+      if (res.ok) {
+        await loadCurrentPosts();
+        window.dispatchEvent(new Event("blog_updated"));
+        setEditingPostId(null);
+        setEditForm(null);
+      } else {
+        const errData = await res.json();
+        setError(errData.error || "Failed to update post");
+      }
+    } catch (err) {
+      console.error("Failed to update post", err);
+    }
   };
 
-  const toggleStarPost = (postId: string) => {
-    const updated = postsList.map((post) => ({
-      ...post,
-      isStarred: post.id === postId ? !post.isStarred : false
-    }));
-    setPostsList(updated);
-    localStorage.setItem("portfolio_blog_posts", JSON.stringify(updated));
-    window.dispatchEvent(new Event("blog_updated"));
+  const toggleStarPost = async (postId: string) => {
+    try {
+      const res = await fetch(`/api/blogs/${postId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${password}`
+        },
+        body: JSON.stringify({ action: "toggle-star" })
+      });
+
+      if (res.ok) {
+        await loadCurrentPosts();
+        window.dispatchEvent(new Event("blog_updated"));
+      }
+    } catch (err) {
+      console.error("Failed to toggle star", err);
+    }
   };
 
-  const deletePost = (postId: string) => {
-    const updated = postsList.filter((post) => post.id !== postId);
-    setPostsList(updated);
-    localStorage.setItem("portfolio_blog_posts", JSON.stringify(updated));
-    window.dispatchEvent(new Event("blog_updated"));
+  const deletePost = async (postId: string) => {
+    try {
+      const res = await fetch(`/api/blogs/${postId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${password}`
+        }
+      });
+
+      if (res.ok) {
+        await loadCurrentPosts();
+        window.dispatchEvent(new Event("blog_updated"));
+      }
+    } catch (err) {
+      console.error("Failed to delete post", err);
+    }
   };
 
   const handleClose = () => {

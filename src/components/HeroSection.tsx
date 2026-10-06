@@ -30,7 +30,21 @@ const DEFAULT_POSTS: BlogPost[] = [
 export default function HeroSection() {
   const [starredPost, setStarredPost] = useState<BlogPost | null>(null);
 
-  const loadPosts = () => {
+  const loadPosts = async () => {
+    try {
+      const res = await fetch("/api/blogs");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
+          const favorite = data.posts.find((p: BlogPost) => p.isStarred) || data.posts[0];
+          setStarredPost(favorite || null);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to load posts from API in HeroSection", e);
+    }
+
     try {
       const saved = localStorage.getItem("portfolio_blog_posts");
       let posts: BlogPost[] = DEFAULT_POSTS;
@@ -40,11 +54,10 @@ export default function HeroSection() {
           posts = parsed;
         }
       }
-      // Find the starred post, or default to the first post
       const favorite = posts.find((p) => p.isStarred) || posts[0];
       setStarredPost(favorite || null);
     } catch (e) {
-      console.error("Failed to load starred post", e);
+      console.error("Failed to load starred post from cache", e);
       setStarredPost(DEFAULT_POSTS[0]);
     }
   };

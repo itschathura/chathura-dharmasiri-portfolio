@@ -53,7 +53,21 @@ export default function BlogSection() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isPaused, setIsPaused] = useState(false);
 
-  const loadPosts = () => {
+  const loadPosts = async () => {
+    try {
+      const res = await fetch("/api/blogs");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
+          setPosts(data.posts);
+          localStorage.setItem("portfolio_blog_posts", JSON.stringify(data.posts));
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to fetch blog posts from API, checking local cache", e);
+    }
+
     try {
       const saved = localStorage.getItem("portfolio_blog_posts");
       if (saved) {
@@ -64,7 +78,7 @@ export default function BlogSection() {
         }
       }
     } catch (e) {
-      console.error("Failed to load blog posts from localStorage", e);
+      console.error("Failed to load blog posts from cache", e);
     }
     setPosts(DEFAULT_POSTS);
   };
@@ -79,19 +93,18 @@ export default function BlogSection() {
     const handleOpenModal = (e: Event) => {
       const customEvent = e as CustomEvent;
       const postId = customEvent.detail;
-      const saved = localStorage.getItem("portfolio_blog_posts");
-      let currentPosts = posts;
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            currentPosts = parsed;
-          }
-        } catch (err) {}
-      }
-      const found = currentPosts.find((p) => p.id === postId);
+      const found = posts.find((p) => p.id === postId);
       if (found) {
         setSelectedPost(found);
+      } else {
+        const saved = localStorage.getItem("portfolio_blog_posts");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            const pFound = parsed.find((p: BlogPost) => p.id === postId);
+            if (pFound) setSelectedPost(pFound);
+          } catch {}
+        }
       }
     };
 
@@ -102,7 +115,7 @@ export default function BlogSection() {
       window.removeEventListener("blog_updated", handleBlogUpdate);
       window.removeEventListener("open_blog_modal", handleOpenModal);
     };
-  }, []);
+  }, [posts]);
 
   const totalReal = posts.length;
   const displaySlides = totalReal > 0 ? [...posts, posts[0]] : [];
