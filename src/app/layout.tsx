@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "chathura.me",
   description: "Chathura Dharmasiri — AI/ML Engineer & Computer Science Undergraduate Portfolio",
+  icons: {
+    icon: "/footer/tameimpala.jpg",
+    shortcut: "/footer/tameimpala.jpg",
+    apple: "/footer/tameimpala.jpg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
