@@ -114,7 +114,7 @@ export default function HeroSection() {
               View Projects <ChevronRight size={16} />
             </Link>
             <Link 
-              href="/cv/Chathura_Dharmasiri_CV.pdf" 
+              href="/cv/Chathura_Dharmasiri_CV1.pdf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="px-5 py-2.5 rounded-xl glass-card text-sm font-medium border border-accent-cyan/40 text-accent-cyan flex items-center gap-1.5 glow-hover"
