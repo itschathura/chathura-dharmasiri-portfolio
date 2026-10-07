@@ -90,7 +90,7 @@ export default function Home() {
                   src="/cards/documindnew.png"
                   alt="DocuMind AI"
                   fill
-                  className="object-cover object-top transition-transform duration-500 group-hover/img:scale-105"
+                  className="object-cover object-center transition-transform duration-500 group-hover/img:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60" />
