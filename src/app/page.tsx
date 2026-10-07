@@ -87,7 +87,7 @@ export default function Home() {
             <div className="glass-card rounded-xl p-5 glow-hover flex flex-col h-full border border-glass-border">
               <div className="relative h-40 sm:h-44 w-full rounded-lg overflow-hidden mb-4 bg-black/40 group/img border border-white/10">
                 <Image
-                  src="/cards/documind-ai.jpg"
+                  src="/cards/documindnew.png"
                   alt="DocuMind AI"
                   fill
                   className="object-cover object-top transition-transform duration-500 group-hover/img:scale-105"
